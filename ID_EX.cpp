@@ -4,9 +4,9 @@ ID_EX::ID_EX()
 {
 	IR = "";
 	NPC = 0;
-	A = 0;
-	B = 0;
-	imm = 0;
+	RS = "";
+	RT = "";
+	imm = "";
 }
 
 ID_EX::~ID_EX()
@@ -34,32 +34,52 @@ int ID_EX::getNPC()
 	return this->NPC;
 }
 
-void ID_EX::setA(int A)
+void ID_EX::setRS(string RS)
 {
-	this->A = A;
+	this->RS = RS;
 }
 
-int ID_EX::getA()
+string ID_EX::getRS()
 {
-	return this->A;
+	return this->RS;
 }
 
-void ID_EX::setB(int B)
+void ID_EX::setRT(string RT)
 {
-	this->B = B;
+	this->RT = RT;
 }
 
-int ID_EX::getB()
+string ID_EX::getRT()
 {
-	return this->B;
+	return this->RT;
 }
 
-void ID_EX::setImm(int imm)
+void ID_EX::setImm(string imm)
 {
 	this->imm = imm;
 }
 
-int ID_EX::getImm()
+string ID_EX::getImm()
 {
 	return this->imm;
+}
+
+void ID_EX::setRD(string RD)
+{
+	this->RD = RD;
+}
+
+string ID_EX::getRD()
+{
+	return this->RD;
+}
+
+void ID_EX::setFunc(string func)
+{
+	this->func = func;
+}
+
+string ID_EX::getFunc()
+{
+	return this->func;
 }

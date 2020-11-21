@@ -10,9 +10,12 @@ public:
 	int getALUoutput();
 	void setLMD(int LMD);
 	int getLMD();
+	void setRD(string RD);
+	string getRD();
 private:
 	string IR;
 	int ALUoutput;
 	int LMD;
+	string RD;
 };
 

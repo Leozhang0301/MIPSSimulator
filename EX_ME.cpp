@@ -3,7 +3,7 @@
 EX_ME::EX_ME()
 {
 	IR = "";
-	B = 0;
+	RT = "";
 	ALUoutput = 0;
 	cond = 0;
 }
@@ -43,12 +43,42 @@ int EX_ME::getcond()
 	return this->cond;
 }
 
-void EX_ME::setB(int B)
+void EX_ME::setRS(string RS)
 {
-	this->B = B;
+	this->RS = RS;
 }
 
-int EX_ME::getB()
+string EX_ME::getRS()
 {
-	return this->B;
+	return this->RS;
+}
+
+void EX_ME::setRT(string RT)
+{
+	this->RT = RT;
+}
+
+string EX_ME::getRT()
+{
+	return this->RT;
+}
+
+void EX_ME::setFunc(string func)
+{
+	this->func = func;
+}
+
+string EX_ME::getFunc()
+{
+	return this->func;
+}
+
+void EX_ME::setRD(string RD)
+{
+	this->RD = RD;
+}
+
+string EX_ME::getRD()
+{
+	return this->RD;
 }

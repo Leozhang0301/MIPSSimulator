@@ -2,6 +2,7 @@
 #ifndef _INCLUDE
 #define _INCLUDE
 #include <string>
+#include <iostream>
 #include "main.h"
 
 #include "IF_ID.h"

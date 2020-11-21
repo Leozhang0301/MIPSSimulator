@@ -33,18 +33,23 @@ void writeInMem(string ipath)
 
 int main()
 {
-	string path = "binary.txt";
-	//before write in memory
-	for (int i = 0; i < numberOfInstruction; i++)
-	{
-		cout << IMEM[i] << endl;
-	}
+	string path = "test.txt";
 	writeInMem(path);
-	//after write in memory
-	for (int i = 0; i < numberOfInstruction; i++)
+	cout << "welcome to MIPS simulator" << endl;
+	cout << "please decide which mode do you want to simulate..." << endl;
+	cout << "1:instruction by instruction   2:cycle by cycle" << endl;
+	cout << "ONLY ACCEPT 1 OR 2!!!" << endl;
+	int mode=0;
+	int numberToExcute=0;
+	cin >> mode;
+	while (mode != 1 && mode != 2)
 	{
-		cout << IMEM[i] <<endl;
+		cout << "please input 1 or 2 ONLY" << endl;
+		cin >> mode;
 	}
-	cout << numberOfInstruction;
+	cout << "How many instructions do you want to simulate..." << endl;
+	cin >> numberToExcute;
+	MIPSSimulator *simulator = new MIPSSimulator(mode, numberToExcute);
+	simulator->process();
 	return 0;
 }

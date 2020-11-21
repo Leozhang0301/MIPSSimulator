@@ -9,17 +9,23 @@ public:
 	string getIR();
 	void setNPC(int NPC);
 	int getNPC();
-	void setA(int A);
-	int getA();
-	void setB(int B);
-	int getB();
-	void setImm(int imm);
-	int getImm();
+	void setRS(string RS);
+	string getRS();
+	void setRT(string RT);
+	string getRT();
+	void setImm(string imm);
+	string getImm();
+	void setRD(string RD);
+	string getRD();
+	void setFunc(string func);
+	string getFunc();
 private:
-	string IR;
-	int NPC;
-	int A;
-	int B;
-	int imm;
+	string IR;//instruction
+	int NPC;//program counter
+	string RS;//source1 register
+	string RT;//source2 register
+	string RD;//destination register
+	string imm;//immediate
+	string func;//operate function
 };
 

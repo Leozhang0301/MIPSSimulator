@@ -29,3 +29,13 @@ int ME_WB::getLMD()
 {
 	return LMD;
 }
+
+void ME_WB::setRD(string RD)
+{
+	this->RD = RD;
+}
+
+string ME_WB::getRD()
+{
+	return this->RD;
+}

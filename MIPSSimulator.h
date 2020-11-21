@@ -20,5 +20,7 @@ private:
 	void excute();
 	void memory();
 	void writeBack();
+	int BToD(string n);//convert binary to decimal
+	string DToB(int n);//convert decimal to binary
 };
 
