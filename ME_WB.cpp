@@ -39,3 +39,23 @@ string ME_WB::getRD()
 {
 	return this->RD;
 }
+
+void ME_WB::setRS(string RS)
+{
+	this->RS = RS;
+}
+
+string ME_WB::getRS()
+{
+	return this->RS;
+}
+
+void ME_WB::setRT(string RT)
+{
+	this->RT = RT;
+}
+
+string ME_WB::getRT()
+{
+	return this->RT;
+}
