@@ -24,5 +24,6 @@ private:
 	string DToB(int n);//convert decimal to binary
 	void displayStatus();
 	string signExtend(string immField);
+	string zeroExtend(string immField);
 };
 
