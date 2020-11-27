@@ -10,5 +10,6 @@
 #include "EX_ME.h"
 #include "ME_WB.h"
 #include "MIPSSimulator.h"
+#include "tempLatch.h"
 
 #endif // !_INCLUDE

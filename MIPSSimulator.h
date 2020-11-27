@@ -2,12 +2,17 @@
 class MIPSSimulator
 {
 public:
-	MIPSSimulator(int mode,int numberToExcute);
+	MIPSSimulator(int mode,int instrToExecute);
 	void process();
+	void setInstrToExe(int num);
+	void setInstr(int i);
+	void setCycle(int i);
 	~MIPSSimulator();
 private:
-	int numberToExcute;
+	int instrToExecute;
 	int cycleClk;
+	int cycleToExecute;
+	int instr;
 	int reg[32];
 	IF_ID fd;
 	ID_EX de;

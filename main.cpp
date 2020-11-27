@@ -7,7 +7,9 @@ using namespace std;
 string IMEM[MEMSIZE] = {"none"};//instructions memory
 int DMEM[MEMSIZE] = {0};//data memory
 int numberOfInstruction=0;//number of instructions
+bool isContinue = true;//countinue flag
 
+//read instructions from file and write into IMEM
 void writeInMem(string ipath)
 {
 	ifstream file;
@@ -40,7 +42,8 @@ int main()
 	cout << "1:instruction by instruction   2:cycle by cycle" << endl;
 	cout << "ONLY ACCEPT 1 OR 2!!!" << endl;
 	int mode=0;
-	int numberToExcute=0;
+	int instrToExecute=0;
+	string CountinueInput = "";
 	cin >> mode;
 	while (mode != 1 && mode != 2)
 	{
@@ -48,8 +51,26 @@ int main()
 		cin >> mode;
 	}
 	cout << "How many instructions do you want to simulate..." << endl;
-	cin >> numberToExcute;
-	MIPSSimulator *simulator = new MIPSSimulator(mode, numberToExcute);
-	simulator->process();
+	cin >> instrToExecute;
+	MIPSSimulator *simulator = new MIPSSimulator(mode, instrToExecute);
+	while (isContinue)
+	{
+		simulator->process();
+		cout << "Would you want to continue?" << endl;
+		cout << "If yes, please input how many instructions do you want to simulate" << endl;
+		cout << "If no, please input no" << endl;
+		cin >> CountinueInput;
+		if (CountinueInput == "no")
+		{
+			isContinue = false;
+		}
+		else
+		{
+			simulator->setInstrToExe(atoi(CountinueInput.c_str()));
+			simulator->setCycle(0);
+			simulator->setInstr(0);
+		}
+	}
+	
 	return 0;
 }

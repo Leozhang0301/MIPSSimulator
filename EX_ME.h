@@ -22,7 +22,7 @@ public:
 private:
 	string IR;
 	int ALUoutput;
-	int cond;
+	int cond;//branch flag
 	string func;
 	string RS;//source1 register
 	string RT;//source2 register

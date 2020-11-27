@@ -8,4 +8,5 @@ using namespace std;
 extern string IMEM[MEMSIZE];//instructions memory
 extern int DMEM[MEMSIZE];//data memory
 extern int numberOfInstruction;//number of instructions
+extern bool isContinue;
 #endif // _MAIN
