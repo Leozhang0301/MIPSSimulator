@@ -27,8 +27,10 @@ private:
 	void writeBack();
 	int BToD(string n);//convert binary to decimal
 	string DToB(int n);//convert decimal to binary
-	void displayStatus();
+	string DToH(int n);//convert decimal to hex, use for displaying
+	void displayStatus(string opcode);
 	string signExtend(string immField);
 	string zeroExtend(string immField);
+	bool stall;//stall flag
 };
 

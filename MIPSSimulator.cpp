@@ -27,6 +27,7 @@ MIPSSimulator::MIPSSimulator(int mode,int numberToExecute)
 		this->cycleToExecute = numberToExecute;
 	}
 	instr = 0;
+	stall = false;
 }
 
 void MIPSSimulator::process()
@@ -42,8 +43,7 @@ void MIPSSimulator::process()
 			excute();
 			decode();
 			fetch();
-			//for debug
-			displayStatus();
+			stall = false;
 		}
 	}
 	//cycle by cycle
@@ -58,8 +58,9 @@ void MIPSSimulator::process()
 			decode();
 			fetch();
 			//for debug
-			displayStatus();
+			//displayStatus();
 			cycleClk++;
+			stall = false;
 		}
 	}
 }
@@ -93,19 +94,33 @@ void MIPSSimulator::fetch()
 	{
 		string opcode = currentInstr.substr(0, 6);
 		//if previous instruction is branch
-		if (em.getcond() == 1)
+		if (de.getCond()==1)
 		{
-			PC = em.getALUoutput();
+			////reset cond flag
+			//de.setCond(0);
+			//PC = em.getALUoutput();
+			//stall and wait a stall
+			cout << "previous instrucion is branch" << endl;
 		}
 		//if previous instruction is not branch
-		else if (em.getcond() == 0)
+		else if (de.getCond() == 0)
 		{
-			PC++;
+			if (em.getcond() == 1)
+			{
+				//reset flag
+				em.setcond(0);
+				PC = em.getALUoutput();
+			}
+			else
+			{
+				PC++;
+			}
+			
 		}
 	}
 	else
 	{
-		cout << "fetch stall" << endl;
+		//cout << "fetch stall" << endl;
 	}
 }
 
@@ -124,12 +139,18 @@ void MIPSSimulator::decode()
 			de.setRS(currentInstr.substr(6, 5));
 			de.setRT(currentInstr.substr(11, 5));
 			string immField = currentInstr.substr(currentInstr.length() - 16, currentInstr.length());
-			//sign extend
-			if (opcode != "001100" && opcode != "001101" && opcode != "001011")
+			//addi lw sw beq slti sign extend
+			if (opcode == "001000" || opcode == "100011" || opcode == "101011"||opcode=="000100"||opcode=="001010")
 			{
+				//if instr is beq
+				if (opcode == "000100")
+				{
+					//set flag as 1
+					de.setCond(1);
+				}
 				de.setImm(signExtend(immField));
 			}
-			//addi zero extend 
+			//andi ori sltiu zero extend 
 			else
 			{
 				de.setImm(zeroExtend(immField));
@@ -150,7 +171,7 @@ void MIPSSimulator::decode()
 	}
 	else
 	{
-		cout << "decode stall" << endl;
+		//cout << "decode stall" << endl;
 	}
 }
 
@@ -185,6 +206,8 @@ void MIPSSimulator::excute()
 			//beq
 			else if (opcode == "000100")
 			{
+				//set de flag as 0 enable fetch
+				de.setCond(0);
 				int rs = BToD(de.getRS());
 				int rt = BToD(de.getRT());
 				if (reg[rs] == reg[rt])
@@ -192,6 +215,7 @@ void MIPSSimulator::excute()
 					//EX/MEM.ALUOutput <-PC + (ID/EX.Imm <<2);
 					int result = BToD(de.getImm());
 					em.setALUoutput(result+1);
+					//set em flag as 1 remain previous instruction is branch
 					em.setcond(1);
 				}
 			}
@@ -308,7 +332,7 @@ void MIPSSimulator::excute()
 	}
 	else
 	{
-		cout << "execute stall" << endl;
+		//cout << "execute stall" << endl;
 	}
 }
 
@@ -343,7 +367,7 @@ void MIPSSimulator::memory()
 	}
 	else
 	{
-		cout << "memory stall" << endl;
+		//cout << "memory stall" << endl;
 	}
 }
 
@@ -403,7 +427,7 @@ void MIPSSimulator::writeBack()
 			//I-type: destination register is rs
 			else
 			{
-				//lui destination register is rt
+				//lui&addi destination register is rt
 				if (opcode == "001111"||opcode=="001000")
 				{
 					int destination = BToD(mw.getRT());
@@ -418,10 +442,12 @@ void MIPSSimulator::writeBack()
 		}
 		//instruction number add 1
 		instr++;
+		//for debug
+		displayStatus(opcode);
 	}
 	else
 	{
-		cout << "write back stall" << endl;
+		//cout << "write back stall" << endl;
 	}
 }
 
@@ -457,13 +483,15 @@ string MIPSSimulator::DToB(int n)
 }
 
 //display status registers content
-void MIPSSimulator::displayStatus()
+void MIPSSimulator::displayStatus(string opcode)
 {
+	cout << endl;
 	for (int i = 8; i < 16; i++)
 	{
-		cout<<"t"<<i-8<<": " << reg[i] << ' ';
+		cout<<"t"<<i-8<<": 0x" << DToH(reg[i]) << ' ';
 	}
 	cout << endl;
+	//if instr is lw
 }
 
 //sign extend
@@ -487,4 +515,48 @@ string MIPSSimulator::zeroExtend(string immField)
 	string imm;
 	imm += "0000000000000000" + immField;
 	return imm;
+}
+
+//decimal to hex
+string MIPSSimulator::DToH(int n)
+{
+	string buffer;
+	int remainder;
+	while (n != 0)
+	{
+		remainder = n % 16;
+		n /= 16;
+		if (remainder < 10)
+		{
+			buffer += to_string(remainder);
+		}
+		else
+		{
+			switch (remainder)
+			{
+			case 10:
+				buffer += 'A';
+				break;
+			case 11:
+				buffer += 'B';
+				break;
+			case 12:
+				buffer += 'C';
+				break;
+			case 13:
+				buffer += 'D';
+				break;
+			case 14:
+				buffer += 'E';
+				break;
+			case 15:
+				buffer += 'F';
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	reverse(buffer.begin(),buffer.end());
+	return buffer;
 }

@@ -19,6 +19,8 @@ public:
 	string getRD();
 	void setFunc(string func);
 	string getFunc();
+	void setCond(int cond);
+	int getCond();
 private:
 	string IR;//instruction
 	int NPC;//program counter
@@ -27,5 +29,6 @@ private:
 	string RD;//destination register
 	string imm;//immediate
 	string func;//operate function
+	int cond;
 };
 

@@ -83,3 +83,13 @@ string ID_EX::getFunc()
 {
 	return this->func;
 }
+
+void ID_EX::setCond(int cond)
+{
+	this->cond = cond;
+}
+
+int ID_EX::getCond()
+{
+	return this->cond;
+}
