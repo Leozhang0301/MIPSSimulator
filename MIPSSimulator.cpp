@@ -27,7 +27,6 @@ MIPSSimulator::MIPSSimulator(int mode,int numberToExecute)
 		this->cycleToExecute = numberToExecute;
 	}
 	instr = 0;
-	stall = false;
 }
 
 void MIPSSimulator::process()
@@ -43,7 +42,6 @@ void MIPSSimulator::process()
 			excute();
 			decode();
 			fetch();
-			stall = false;
 		}
 	}
 	//cycle by cycle
@@ -60,7 +58,6 @@ void MIPSSimulator::process()
 			//for debug
 			//displayStatus();
 			cycleClk++;
-			stall = false;
 		}
 	}
 }
@@ -92,7 +89,7 @@ void MIPSSimulator::fetch()
 	string currentInstr = fd.getIR();
 	if (currentInstr != "")
 	{
-		string opcode = currentInstr.substr(0, 6);
+		
 		//if previous instruction is branch
 		if (de.getCond()==1)
 		{
@@ -100,22 +97,24 @@ void MIPSSimulator::fetch()
 			//de.setCond(0);
 			//PC = em.getALUoutput();
 			//stall and wait a stall
+			//fd.setIR("");
 			cout << "previous instrucion is branch" << endl;
 		}
 		//if previous instruction is not branch
 		else if (de.getCond() == 0)
 		{
+			//if rs==rt
 			if (em.getcond() == 1)
 			{
 				//reset flag
 				em.setcond(0);
 				PC = em.getALUoutput();
+				fd.setIR(IMEM[PC]);
 			}
 			else
 			{
 				PC++;
 			}
-			
 		}
 	}
 	else
@@ -208,6 +207,7 @@ void MIPSSimulator::excute()
 			{
 				//set de flag as 0 enable fetch
 				de.setCond(0);
+				fd.setIR("");
 				int rs = BToD(de.getRS());
 				int rt = BToD(de.getRT());
 				if (reg[rs] == reg[rt])

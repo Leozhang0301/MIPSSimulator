@@ -7,6 +7,7 @@ ID_EX::ID_EX()
 	RS = "";
 	RT = "";
 	imm = "";
+	cond = 0;
 }
 
 ID_EX::~ID_EX()

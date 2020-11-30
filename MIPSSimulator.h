@@ -31,6 +31,5 @@ private:
 	void displayStatus(string opcode);
 	string signExtend(string immField);
 	string zeroExtend(string immField);
-	bool stall;//stall flag
 };
 
