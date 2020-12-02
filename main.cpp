@@ -62,11 +62,12 @@ int main()
 		cin >> CountinueInput;
 		if (CountinueInput == "no")
 		{
+			cout << "utlization is :" << simulator->utilization() * 100 << "%" << endl;
 			isContinue = false;
 		}
 		else if(CountinueInput=="yes")
 		{
-			cout << "please input how many instructions do you want to simulate";
+			cout << "please input how many instructions do you want to simulate"<<endl;
 			int num = 0;
 			cin >> num;
 			simulator->setInstrToExe(num);

@@ -7,6 +7,7 @@ public:
 	void setInstrToExe(int num);
 	void setInstr(int i);
 	void setCycle(int i);
+	int utilization();
 	~MIPSSimulator();
 private:
 	int instrToExecute;
@@ -33,5 +34,6 @@ private:
 	string zeroExtend(string immField);
 
 	bool isDataHazard;
+	int stall;
 };
 

@@ -28,6 +28,7 @@ MIPSSimulator::MIPSSimulator(int mode,int numberToExecute)
 	}
 	instr = 0;
 	isDataHazard = false;
+	stall = 0;
 }
 
 void MIPSSimulator::process()
@@ -43,6 +44,7 @@ void MIPSSimulator::process()
 			excute();
 			decode();
 			fetch();
+			cycleClk++;
 		}
 	}
 	//cycle by cycle
@@ -94,11 +96,6 @@ void MIPSSimulator::fetch()
 		//if previous instruction is branch
 		if (de.getCond()==1)
 		{
-			////reset cond flag
-			//de.setCond(0);
-			//PC = em.getALUoutput();
-			//stall and wait a stall
-			//fd.setIR("");
 			cout << "previous instrucion is branch" << endl;
 		}
 		//if previous instruction is not branch
@@ -120,6 +117,7 @@ void MIPSSimulator::fetch()
 	}
 	else
 	{
+		stall++;
 		//cout << "fetch stall" << endl;
 	}
 }
@@ -177,7 +175,7 @@ void MIPSSimulator::decode()
 				}
 			}
 			//only for debug
-			cout << "rs:" << de.getRS() << " rt:" << de.getRT() << " imm:" << de.getImm() << endl;
+			//cout << "rs:" << de.getRS() << " rt:" << de.getRT() << " imm:" << de.getImm() << endl;
 		}
 		//R-type instrucion
 		else
@@ -196,11 +194,12 @@ void MIPSSimulator::decode()
 				isDataHazard = true;
 			}
 			//only for debug
-			cout << "rs:" << de.getRS() << " rt:" << de.getRT() << " rd:" << de.getRD() << " func:" << de.getFunc() << endl;
+			//cout << "rs:" << de.getRS() << " rt:" << de.getRT() << " rd:" << de.getRD() << " func:" << de.getFunc() << endl;
 		}
 	}
 	else
 	{
+		stall++;
 		//cout << "decode stall" << endl;
 	}
 }
@@ -363,6 +362,7 @@ void MIPSSimulator::excute()
 	}
 	else
 	{
+	    stall++;
 		//cout << "execute stall" << endl;
 	}
 }
@@ -398,6 +398,7 @@ void MIPSSimulator::memory()
 	}
 	else
 	{
+		stall++;
 		//cout << "memory stall" << endl;
 	}
 }
@@ -483,6 +484,7 @@ void MIPSSimulator::writeBack()
 	}
 	else
 	{
+		stall++;
 		//cout << "write back stall" << endl;
 	}
 }
@@ -603,4 +605,11 @@ string MIPSSimulator::DToH(int n)
 	}
 	reverse(buffer.begin(),buffer.end());
 	return buffer;
+}
+
+int MIPSSimulator::utilization()
+{
+	int Utlization = 0;
+	Utlization = (cycleClk*5 - stall) / cycleClk;
+	return Utlization;
 }
