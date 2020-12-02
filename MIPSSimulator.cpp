@@ -27,6 +27,7 @@ MIPSSimulator::MIPSSimulator(int mode,int numberToExecute)
 		this->cycleToExecute = numberToExecute;
 	}
 	instr = 0;
+	isDataHazard = false;
 }
 
 void MIPSSimulator::process()
@@ -128,7 +129,7 @@ void MIPSSimulator::decode()
 	//get instruction from IF_ID
 	de.setIR(fd.getIR());
 	string currentInstr = fd.getIR();
-	if (currentInstr != "")
+	if (currentInstr != ""&& !isDataHazard)
 	{
 		//get opcode
 		string opcode = currentInstr.substr(0, 6);
@@ -154,18 +155,48 @@ void MIPSSimulator::decode()
 			{
 				de.setImm(zeroExtend(immField));
 			}
+			//if beq instruction both rs & rt are source
+			if (opcode == "000100")
+			{
+				if (de.getRS() == em.getRT() || de.getRT() == em.getRT())
+				{
+					de.setIR("");
+					PC--;
+					isDataHazard = true;
+				}
+			}
+			//if not beq only rs is source
+			else
+			{
+				//if rs equal EX_ME destination
+				if (de.getRS() == em.getRT())
+				{
+					de.setIR("");
+					PC--;
+					isDataHazard = true;
+				}
+			}
 			//only for debug
 			cout << "rs:" << de.getRS() << " rt:" << de.getRT() << " imm:" << de.getImm() << endl;
 		}
 		//R-type instrucion
 		else
 		{
+			
 			de.setRS(currentInstr.substr(6, 5));
 			de.setRT(currentInstr.substr(11, 5));
 			de.setRD(currentInstr.substr(16, 5));
 			de.setFunc(currentInstr.substr(26, 6));
+			//if source equal EX_ME destination
+			if (de.getRS() == em.getRD()||de.getRT()==em.getRD())
+			{
+				//execute stall
+				de.setIR("");
+				PC--;
+				isDataHazard = true;
+			}
 			//only for debug
-			cout << "rs: " << de.getRS() << "rt: " << de.getRT() << "rd: " << de.getRD() << "func: " << de.getFunc() << endl;
+			cout << "rs:" << de.getRS() << " rt:" << de.getRT() << " rd:" << de.getRD() << " func:" << de.getFunc() << endl;
 		}
 	}
 	else
@@ -376,6 +407,11 @@ void MIPSSimulator::writeBack()
 	string currentInstr = mw.getIR();
 	if (currentInstr != "")
 	{
+		//reset data hazard
+		if (isDataHazard)
+		{
+			isDataHazard = false;
+		}
 		string opcode = currentInstr.substr(0, 6);
 		//load word
 		if (opcode == "100011")
@@ -488,7 +524,15 @@ void MIPSSimulator::displayStatus(string opcode)
 	cout << endl;
 	for (int i = 8; i < 16; i++)
 	{
-		cout<<"t"<<i-8<<": 0x" << DToH(reg[i]) << ' ';
+		string temp = DToH(reg[i]);
+		if (temp == "")
+		{
+			cout << "t" << i - 8 << ": 0x0000" << ' ';
+		}
+		else
+		{
+			cout << "t" << i - 8 << ": 0x" << temp << ' ';
+		}
 	}
 	cout << endl;
 	//if instr is lw

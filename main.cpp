@@ -35,7 +35,7 @@ void writeInMem(string ipath)
 
 int main()
 {
-	string path = "test.txt";
+	string path = "binary.txt";
 	writeInMem(path);
 	cout << "welcome to MIPS simulator" << endl;
 	cout << "please decide which mode do you want to simulate..." << endl;
@@ -64,9 +64,12 @@ int main()
 		{
 			isContinue = false;
 		}
-		else
+		else if(CountinueInput=="yes")
 		{
-			simulator->setInstrToExe(atoi(CountinueInput.c_str()));
+			cout << "please input how many instructions do you want to simulate";
+			int num = 0;
+			cin >> num;
+			simulator->setInstrToExe(num);
 			simulator->setCycle(0);
 			simulator->setInstr(0);
 		}
