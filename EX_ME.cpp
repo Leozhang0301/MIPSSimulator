@@ -82,3 +82,14 @@ string EX_ME::getRD()
 {
 	return this->RD;
 }
+
+void EX_ME::display()
+{
+	cout << "execute_memory latch conten:" << endl;
+	cout << "the current instruction is " << getIR() << endl;
+	cout << "the source register is " << getRS() << endl;
+	cout << "the temp register is " << getRT() << endl;
+	cout << "the destination register is" << getRD() << endl;
+	cout << "the function field is " << getFunc() << endl;
+	cout << "the ALU output is" << getALUoutput() << endl;
+}

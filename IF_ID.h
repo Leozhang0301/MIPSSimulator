@@ -9,8 +9,10 @@ public:
 	string getIR();
 	void setNPC(int NPC);
 	int getNPC();
+	void display();//display latch content
 private:
 	string IR;//instruction
 	int NPC;//program counter
+	
 };
 

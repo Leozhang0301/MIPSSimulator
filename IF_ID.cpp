@@ -31,3 +31,10 @@ int IF_ID::getNPC()
 {
 	return this->NPC;
 }
+
+void IF_ID::display()
+{
+	cout << "fetch_decode latch conten:" << endl;
+	cout << "the current instruction is " << getIR() << endl;
+	cout << "the program counter is " << getNPC() << endl;
+}

@@ -62,7 +62,15 @@ int main()
 		cin >> CountinueInput;
 		if (CountinueInput == "no")
 		{
-			cout << "utlization is :" << simulator->utilization() * 100 << "%" << endl;
+			string stageName[5] = { "fetch stage",
+								 "decode stage",
+								 "execute stage",
+								 "memory stage",
+								 "write back stage" };
+			for (int i = 0; i < 5; i++)
+			{
+				cout << "the " << stageName[i] << " utlization is: "<<setprecision(4) << simulator->utilization(i)<<"%" << endl;
+			}
 			isContinue = false;
 		}
 		else if(CountinueInput=="yes")
@@ -75,6 +83,5 @@ int main()
 			simulator->setInstr(0);
 		}
 	}
-	
 	return 0;
 }

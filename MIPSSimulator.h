@@ -7,11 +7,11 @@ public:
 	void setInstrToExe(int num);
 	void setInstr(int i);
 	void setCycle(int i);
-	int utilization();
+	double utilization(int stage);
 	~MIPSSimulator();
 private:
 	int instrToExecute;
-	int cycleClk;
+	double cycleClk;
 	int cycleToExecute;
 	int instr;
 	int reg[32];
@@ -29,11 +29,15 @@ private:
 	int BToD(string n);//convert binary to decimal
 	string DToB(int n);//convert decimal to binary
 	string DToH(int n);//convert decimal to hex, use for displaying
-	void displayStatus(string opcode);
+	void displayStatus(int opcode);
 	string signExtend(string immField);
 	string zeroExtend(string immField);
 
 	bool isDataHazard;
-	int stall;
+	double fetchStall;
+	double decodeStall;
+	double executeStall;
+	double memoryStall;
+	double writeBackStall;
 };
 

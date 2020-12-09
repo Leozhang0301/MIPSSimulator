@@ -16,6 +16,7 @@ public:
 	string getRS();
 	void setRT(string RT);
 	string getRT();
+	void display();//display latch content
 private:
 	string IR;
 	int ALUoutput;
@@ -23,5 +24,6 @@ private:
 	string RD;
 	string RS;
 	string RT;
+	
 };
 

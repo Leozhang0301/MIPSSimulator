@@ -28,7 +28,11 @@ MIPSSimulator::MIPSSimulator(int mode,int numberToExecute)
 	}
 	instr = 0;
 	isDataHazard = false;
-	stall = 0;
+	fetchStall = 0;
+	decodeStall = 0;
+	memoryStall = 0;
+	executeStall = 0;
+	writeBackStall = 0;
 }
 
 void MIPSSimulator::process()
@@ -59,7 +63,7 @@ void MIPSSimulator::process()
 			decode();
 			fetch();
 			//for debug
-			//displayStatus();
+			displayStatus(mode);
 			cycleClk++;
 		}
 	}
@@ -117,7 +121,7 @@ void MIPSSimulator::fetch()
 	}
 	else
 	{
-		stall++;
+		fetchStall++;
 		//cout << "fetch stall" << endl;
 	}
 }
@@ -199,7 +203,7 @@ void MIPSSimulator::decode()
 	}
 	else
 	{
-		stall++;
+		decodeStall++;
 		//cout << "decode stall" << endl;
 	}
 }
@@ -362,7 +366,7 @@ void MIPSSimulator::excute()
 	}
 	else
 	{
-	    stall++;
+	    executeStall++;
 		//cout << "execute stall" << endl;
 	}
 }
@@ -385,6 +389,8 @@ void MIPSSimulator::memory()
 		else if (opcode == "101011")
 		{
 			DMEM[em.getALUoutput()] = reg[BToD(em.getRT())];
+			cout <<"The content in regester "<< BToD(em.getRT())<<" has been stored in memory "<< em.getALUoutput()<<endl;
+			cout << "Content is " << reg[BToD(em.getRT())] << endl;
 		}
 		else
 		{
@@ -398,7 +404,7 @@ void MIPSSimulator::memory()
 	}
 	else
 	{
-		stall++;
+		memoryStall++;
 		//cout << "memory stall" << endl;
 	}
 }
@@ -419,6 +425,7 @@ void MIPSSimulator::writeBack()
 		{
 			int destination = BToD(mw.getRT());
 			reg[destination] = mw.getALUoutput();
+			cout << "load word from memory secussed" << endl;
 		}
 		//other instructions
 		else
@@ -458,8 +465,7 @@ void MIPSSimulator::writeBack()
 			//sw, beq do nothing
 			else if (opcode == "101011" || opcode == "000100")
 			{
-				//only for debug
-				cout << DMEM[em.getALUoutput()];
+				//empty
 			}
 			//I-type: destination register is rs
 			else
@@ -480,11 +486,14 @@ void MIPSSimulator::writeBack()
 		//instruction number add 1
 		instr++;
 		//for debug
-		displayStatus(opcode);
+		if (mode != 2)
+		{
+			displayStatus(mode);
+		}
 	}
 	else
 	{
-		stall++;
+		writeBackStall++;
 		//cout << "write back stall" << endl;
 	}
 }
@@ -521,23 +530,41 @@ string MIPSSimulator::DToB(int n)
 }
 
 //display status registers content
-void MIPSSimulator::displayStatus(string opcode)
+void MIPSSimulator::displayStatus(int mode)
 {
-	cout << endl;
-	for (int i = 8; i < 16; i++)
+	cout << "***********************" << endl;
+	switch (mode)
 	{
-		string temp = DToH(reg[i]);
-		if (temp == "")
+	case 1:
+		for (int i = 8; i < 16; i++)
 		{
-			cout << "t" << i - 8 << ": 0x0000" << ' ';
+			string temp = DToH(reg[i]);
+			if (temp == "")
+			{
+				cout << "t" << i - 8 << ": 0x0000" << ' ';
+			}
+			else
+			{
+				cout << "t" << i - 8 << ": 0x" << temp << ' ';
+			}
 		}
-		else
-		{
-			cout << "t" << i - 8 << ": 0x" << temp << ' ';
-		}
+		cout << endl;
+		break;
+	case 2:
+		fd.display();
+		cout << endl;
+		de.display();
+		cout << endl;
+		em.display();
+		cout << endl;
+		mw.display();
+		cout << endl;
+		break;
+	default:
+		break;
 	}
+	cout << "***********************" << endl;
 	cout << endl;
-	//if instr is lw
 }
 
 //sign extend
@@ -607,9 +634,28 @@ string MIPSSimulator::DToH(int n)
 	return buffer;
 }
 
-int MIPSSimulator::utilization()
+double MIPSSimulator::utilization(int stage)
 {
-	int Utlization = 0;
-	Utlization = (cycleClk*5 - stall) / cycleClk;
-	return Utlization;
+	double Utlization = 0;
+	switch (stage)
+	{
+	case 0:
+		Utlization = (cycleClk - fetchStall) / cycleClk;
+		break;
+	case 1:
+		Utlization = (cycleClk - decodeStall) / cycleClk;
+		break;
+	case 2:
+		Utlization = (cycleClk - executeStall) / cycleClk;
+		break;
+	case 3:
+		Utlization = (cycleClk - memoryStall) / cycleClk;
+		break;
+	case 4:
+		Utlization = (cycleClk - writeBackStall) / cycleClk;
+		break;
+	default:
+		break;
+	}
+	return Utlization*100;
 }

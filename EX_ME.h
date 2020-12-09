@@ -19,6 +19,7 @@ public:
 	string getRT();
 	void setRD(string RD);
 	string getRD();
+	void display();//display latch content
 private:
 	string IR;
 	int ALUoutput;
@@ -27,5 +28,6 @@ private:
 	string RS;//source1 register
 	string RT;//source2 register
 	string RD;//destination register
+	
 };
 

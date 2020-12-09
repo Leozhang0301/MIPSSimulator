@@ -94,3 +94,14 @@ int ID_EX::getCond()
 {
 	return this->cond;
 }
+
+void ID_EX::display()
+{
+	cout << "decode_execute latch conten:" << endl;
+	cout << "the current instruction is " << getIR() << endl;
+	cout << "the source register is " << getRS() << endl;
+	cout << "the temp register is " << getRT() << endl;
+	cout << "the destination register is" << getRD() << endl;
+	cout << "the function field is " << getFunc() << endl;
+	cout << "the immediate field is " << getImm() << endl;
+}

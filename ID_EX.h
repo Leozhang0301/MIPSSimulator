@@ -21,6 +21,7 @@ public:
 	string getFunc();
 	void setCond(int cond);
 	int getCond();
+	void display();//display latch content
 private:
 	string IR;//instruction
 	int NPC;//program counter
@@ -30,5 +31,6 @@ private:
 	string imm;//immediate
 	string func;//operate function
 	int cond;
+	
 };
 

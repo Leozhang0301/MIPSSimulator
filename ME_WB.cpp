@@ -59,3 +59,13 @@ string ME_WB::getRT()
 {
 	return this->RT;
 }
+
+void ME_WB::display()
+{
+	cout << "memory_writeback latch conten:" << endl;
+	cout << "the current instruction is " << getIR() << endl;
+	cout << "the source register is " << getRS() << endl;
+	cout << "the temp register is " << getRT() << endl;
+	cout << "the destination register is" << getRD() << endl;
+	cout << "the ALU output is" << getALUoutput() << endl;
+}
